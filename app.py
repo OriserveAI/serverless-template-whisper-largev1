@@ -1,5 +1,5 @@
 import torch
-import whisper
+import faster_whisper_local
 import os
 import base64
 from io import BytesIO
@@ -9,8 +9,8 @@ from io import BytesIO
 def init():
     global model
     #medium, large-v1, large-v2
-    model_name = "large-v1"
-    model = whisper.load_model(model_name)
+    model_name = "large-v2"
+    model = faster_whisper_local.WhisperModel(model_name)
 
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.
@@ -18,17 +18,13 @@ def inference(model_inputs:dict) -> dict:
     global model
 
     # Parse out your arguments
-    mp3BytesString = model_inputs.get('mp3BytesString', None)
-    if mp3BytesString == None:
+    audio_array = model_inputs.get('audio_array', None)
+    if audio_array == None:
         return {'message': "No input provided"}
     
-    mp3Bytes = BytesIO(base64.b64decode(mp3BytesString.encode("ISO-8859-1")))
-    with open('input.mp3','wb') as file:
-        file.write(mp3Bytes.getbuffer())
-    
     # Run the model
-    result = model.transcribe("input.mp3")
+    result = model.transcribe(audio_array, beam_size=5)
     output = {"text":result["text"]}
-    os.remove("input.mp3")
+    # os.remove("input.mp3")
     # Return the results as a dictionary
     return output
