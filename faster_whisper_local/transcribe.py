@@ -9,10 +9,10 @@ import ctranslate2
 import numpy as np
 import tokenizers
 
-from utils.faster_whisper_local.audio import decode_audio
-from utils.faster_whisper_local.feature_extractor import FeatureExtractor
-from utils.faster_whisper_local.tokenizer import Tokenizer
-from utils.faster_whisper_local.utils import download_model, format_timestamp, get_logger
+from faster_whisper_local.audio import decode_audio
+from faster_whisper_local.feature_extractor import FeatureExtractor
+from faster_whisper_local.tokenizer import Tokenizer
+from faster_whisper_local.utils import download_model, format_timestamp, get_logger
 import re
 
 class TranscriptionOptions(NamedTuple):
