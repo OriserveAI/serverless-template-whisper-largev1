@@ -1,4 +1,4 @@
-import faster_whisper_local
+from faster_whisper import WhisperModel
 
 # Init is ran on server startup
 # Load your model to GPU as a global variable here using the variable name "model"
@@ -6,7 +6,7 @@ def init():
     global model
     #medium, large-v1, large-v2
     model_name = "large-v2"
-    model = faster_whisper_local.WhisperModel(model_name)
+    model = WhisperModel(model_name)
 
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.
