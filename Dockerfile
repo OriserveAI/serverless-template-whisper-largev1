@@ -23,7 +23,7 @@ RUN python3 download.py
 # Add your custom app code, init() and inference()
 ADD app.py .
 
-EXPOSE 8000
+EXPOSE 5000
 
-RUN gunicorn app:app -b :8000 
+RUN gunicorn app:app
 #CMD python3 -u server.py
