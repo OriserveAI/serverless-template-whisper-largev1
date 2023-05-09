@@ -15,7 +15,7 @@ model = WhisperModel(model_name)
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.
 
-@app.route('/infer')
+@app.route('/infer',methods=['POST'])
 def inference():
     global model
     data = request.get_json(force=True)
