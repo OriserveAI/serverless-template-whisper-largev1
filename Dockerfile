@@ -12,7 +12,7 @@ ADD requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
 # We add the banana boilerplate here
-# ADD server.py .
+ADD server.py .
 
 # Add your model weight files 
 # (in this case we have a python script)
@@ -25,5 +25,5 @@ ADD app.py .
 
 EXPOSE 8000
 
-RUN gunicorn app:app
-#CMD python3 -u server.py
+#RUN python3 app.py
+CMD python3 -u server.py

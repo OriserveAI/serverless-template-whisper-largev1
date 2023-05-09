@@ -1,42 +1,39 @@
-from flask import Flask,request
-from faster_whisper import WhisperModel
+from potassium import Potassium, Request, Response
+from transformers import pipeline
+import torch
 
-app = Flask(__name__)
+app = Potassium("my_app")
 
-# Init is ran on server startup
-# Load your model to GPU as a global variable here using the variable name "model"
-#def init():
-model_name = "large-v2"
-model = WhisperModel(model_name)
-# global model
-#medium, large-v1, large-v2
-
-
-# Inference is ran for every server call
-# Reference your preloaded global model variable here.
-
-@app.route('/infer',methods=['POST'])
-def inference():
-    global model
-    data = request.get_json(force=True)
-    # Parse out your arguments
-    audio_array = data['audio_array']
-    # audio_array = model_inputs.get('audio_array', None)
-    if audio_array == None:
-        return {'message': "No input provided"}
+# @app.init runs at startup, and initializes the app's context
+@app.init
+def init():
+    model_name = "large-v2"
+    model = WhisperModel(model_name)
     
-    # Run the model
+    context = {
+        "model": model,
+        "hello": "world"
+    }
+
+    return context
+
+# @app.handler is an http post handler running for every call
+@app.handler("/")
+def handler(context: dict, request: Request) -> Response:
+    
+    prompt = request.json.get("prompt")
+    model = context.get("model")
     segments,info = model.transcribe(audio_array, beam_size=5)
     text = []
     for seg in segments:
         text.append(seg['text'])
     
     text = ' '.join(text)
-    
-    output = {"text":text}
-    # os.remove("input.mp3")
-    # Return the results as a dictionary
-    return output
 
-if __name__=='__main__':
-    app.run(port=8000)
+    return Response(
+        json = {"outputs": text}, 
+        status=200
+    )
+
+if __name__ == "__main__":
+    app.serve()
